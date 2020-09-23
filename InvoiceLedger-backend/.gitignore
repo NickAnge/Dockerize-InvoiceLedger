@@ -1,0 +1,7 @@
+node_modules/
+.vscode
+Upload
+npm-debug.log
+package-lock.json
+/config/main.js 
+/database/config.js

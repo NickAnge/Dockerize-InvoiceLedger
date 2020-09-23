@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+    db:
+       build: ./postgres
+       environment:
+           POSTGRES_PASSWORD: postgres
+           POSTGRES_USER: postgres
+           POSTGRES_DB: mydb
+       volumes:
+           - ./postgres/pgdata:/var/lib/postgresql/data
+    web-backend:
+        build: ./InvoiceLedger-backend
+        ports:
+            - "5000:5000"
+        depends_on:
+            - "db"
+        environment:
+            DB_HOST: db
+        command: ["./wait-for-it.sh", "db:5432", "--", "node", "server.js"]
+
