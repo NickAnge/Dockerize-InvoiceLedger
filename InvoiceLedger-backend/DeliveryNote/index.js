@@ -15,7 +15,7 @@ exports.showDeliveryNotes = function (req, res) {
         })
         .catch((err) => {
             console.error('problem communicating with db');
-            res.status(500).json({
+            return res.status(500).json({
                 err: error.message
             });
         });
