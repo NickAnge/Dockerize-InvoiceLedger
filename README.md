@@ -14,18 +14,52 @@ Invoice Ledger was a project that was build by me(back-end) and my collegue Gior
 ### Frontend Architecture
   - vue.js framework
   - vuex.js library
+  - vuetify 
   
-## Installation and Run
-[Frontend-repo]()
-
 ## **Dockerize**
-Install Docker and Docker-compose to your pc with your op package manager. I followed these steps
+Install Docker and Docker-compose to your pc with your op package manager.
 
-#### Docker-Steps
-__1. BackEnd__
-- Create Dockerfile for node.js app
-- Create Dockerfile for postgreSQL storage
-- Create docker-compose.yml and connected these files
+Here is the docker-compose.yml that powers the whole setup.
 
+    version: "3.7"
+    services:
+    db: #storage
+       container_name: Invoice-db
+       build:
+           context: ./postgres
+       environment:
+           POSTGRES_PASSWORD: postgres
+           POSTGRES_USER: postgres
+           POSTGRES_DB: mydb
+       volumes:
+           - ./postgres/pgdata:/var/lib/postgresql/data
+    
+    web-backend: #backend
+        container_name: Invoice-backend
+        build:
+            context: ./InvoiceLedger-backend
+        ports:
+            - "5000:5000"
+        depends_on:
+            - "db"
+        environment:
+            DB_HOST: db
+        command: ["./wait-for-it.sh", "db:5432", "--", "node", "server.js"]
+    web-frontend: #frontend
+        container_name: Invoice-frontend
+        build:
+            context: ./Invoice-Ledger-FrontEnd
+        ports:
+            - "8080:80"
+        depends_on:
+            - "web-backend"
+  
 
-__2. FrontEnd__
+### Clone
+    - Clone this repo to your local machine using : git clone https://github.com/NickAnge/Dockerize-InvoiceLedger.git
+    
+### Try it
+  1. Install [Docker-compose](https://docs.docker.com/compose/install/) to your pc:
+  2. docker-compose up 
+  3. docker container list
+  4. https://localhost:8080
